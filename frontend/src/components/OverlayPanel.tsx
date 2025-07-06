@@ -51,6 +51,8 @@ export const OverlayPanel: React.FC<OverlayPanelProps> = ({
     fontSize: 24,
     color: '#ffffff',
     opacity: 100,
+    positionX: 50,
+    positionY: 50,
   });
   const { toast } = useToast();
 
@@ -66,7 +68,7 @@ export const OverlayPanel: React.FC<OverlayPanelProps> = ({
     const overlay: Overlay = {
       type: newOverlay.type,
       content: newOverlay.content,
-      position: { x: 10, y: 10 },
+      position: { x: newOverlay.positionX, y: newOverlay.positionY },
       size: { width: 200, height: 50 },
       style: {
         fontSize: newOverlay.fontSize,
@@ -162,6 +164,31 @@ export const OverlayPanel: React.FC<OverlayPanelProps> = ({
                   }
                   className="bg-muted/30 border-border text-foreground placeholder:text-muted-foreground rounded-xl"
                 />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label className="text-foreground font-medium">Position X: {newOverlay.positionX}%</Label>
+                  <Slider
+                    value={[newOverlay.positionX]}
+                    onValueChange={(value) => setNewOverlay({ ...newOverlay, positionX: value[0] })}
+                    min={0}
+                    max={90}
+                    step={1}
+                    className="mt-2"
+                  />
+                </div>
+                <div>
+                  <Label className="text-foreground font-medium">Position Y: {newOverlay.positionY}%</Label>
+                  <Slider
+                    value={[newOverlay.positionY]}
+                    onValueChange={(value) => setNewOverlay({ ...newOverlay, positionY: value[0] })}
+                    min={0}
+                    max={90}
+                    step={1}
+                    className="mt-2"
+                  />
+                </div>
               </div>
 
               {newOverlay.type === 'text' && (

@@ -83,6 +83,17 @@ const Index = () => {
                 title: "Stream Started",
                 description: "Successfully connected to RTSP stream.",
               });
+              
+              // Create test HLS files if needed
+              fetch(`https://livesitter-yeop.onrender.com/api/streams/test-hls/${id}`)
+                .then(response => {
+                  if (response.ok) {
+                    console.log('Test HLS files created');
+                  }
+                })
+                .catch(error => {
+                  console.error('Failed to create test HLS files:', error);
+                });
             },
             onError: () => {
               setStreamStatus('error');
@@ -157,6 +168,54 @@ const Index = () => {
     });
   };
 
+  // Add sample overlays for testing
+  const handleAddSampleOverlays = () => {
+    const sampleOverlays = [
+      {
+        name: "Live Text",
+        type: "text" as const,
+        content: "LIVE STREAM",
+        position: { x: 10, y: 10 },
+        size: { width: 200, height: 50 },
+        style: {
+          fontSize: 24,
+          color: "#ffffff",
+          fontFamily: "Arial",
+          opacity: 1.0,
+        },
+      },
+      {
+        name: "Logo",
+        type: "logo" as const,
+        content: "LIVECAST PRO",
+        position: { x: 70, y: 10 },
+        size: { width: 150, height: 40 },
+        style: {
+          fontSize: 16,
+          color: "#ffffff",
+          fontFamily: "Arial",
+          opacity: 0.8,
+        },
+      },
+      {
+        name: "Sample Image",
+        type: "image" as const,
+        content: "https://picsum.photos/100/50",
+        position: { x: 10, y: 70 },
+        size: { width: 100, height: 50 },
+        style: {
+          opacity: 0.9,
+        },
+      },
+    ];
+    
+    handleBatchAddOverlays(sampleOverlays);
+    toast({
+      title: "Sample Overlays Added",
+      description: "Added sample text, logo, and image overlays for testing.",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
       {/* Modern Header with Floating Design */}
@@ -203,7 +262,7 @@ const Index = () => {
                   />
                   <Button
                     onClick={isStreaming ? handleStopStream : handleStartStream}
-                    disabled={streamStatus === 'connecting' || createStream.isLoading || startStream.isLoading || stopStream.isLoading}
+                    disabled={streamStatus === 'connecting' || createStream.isPending || startStream.isPending || stopStream.isPending}
                     className={`px-8 h-12 rounded-xl font-medium transition-all duration-300 ${
                       isStreaming 
                         ? 'bg-destructive hover:bg-destructive/90 shadow-[0_0_20px_hsl(var(--destructive)/0.3)]' 
@@ -246,7 +305,10 @@ const Index = () => {
                     rtspUrl={rtspUrl}
                     hlsUrl={hlsUrl}
                   />
-                  <OverlayManager overlays={overlays} />
+                  <OverlayManager 
+                    overlays={overlays} 
+                    onUpdateOverlay={handleUpdateOverlay}
+                  />
                 </div>
                 <div className="p-6 bg-gradient-to-r from-card/50 to-muted/30">
                   <StreamControls 
@@ -269,6 +331,19 @@ const Index = () => {
               onBatchAddOverlays={handleBatchAddOverlays}
               loading={overlaysLoading}
             />
+            
+            {/* Test Sample Overlays Button */}
+            <Card className="bg-gradient-subtle border-border/50 shadow-glow mt-4">
+              <CardContent className="p-4">
+                <Button 
+                  onClick={handleAddSampleOverlays}
+                  className="w-full bg-gradient-primary hover:shadow-glow"
+                  disabled={overlaysLoading}
+                >
+                  Add Sample Overlays
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
 

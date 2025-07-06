@@ -432,7 +432,7 @@ def serve_hls_file(filename):
             'error': 'File not found'
         }), 404
 
-@streams_bp.route('/test-hls/<stream_id>')
+@streams_bp.route('/test-hls/<stream_id>', methods=['GET'])
 def test_hls_creation(stream_id: str):
     """Test endpoint to create a simple HLS file for testing"""
     try:
