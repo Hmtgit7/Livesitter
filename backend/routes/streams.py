@@ -408,11 +408,12 @@ def get_active_streams():
             'error': 'Internal server error'
         }), 500
 
-@streams_bp.route('/streams/<path:filename>')
+@streams_bp.route('/hls/<path:filename>')
 def serve_hls_file(filename):
     """Serve HLS files (playlist.m3u8 and .ts segments)"""
     try:
         streams_dir = os.path.join(os.getcwd(), 'streams')
+        logger.info(f"Serving HLS file: {filename} from directory: {streams_dir}")
         return send_from_directory(streams_dir, filename)
     except Exception as e:
         logger.error(f"Error serving HLS file {filename}: {e}")

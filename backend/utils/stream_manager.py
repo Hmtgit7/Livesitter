@@ -52,7 +52,7 @@ class StreamManager:
             os.makedirs(stream_dir, exist_ok=True)
             
             # Generate HLS URL - include full API path
-            hls_url = f"/api/streams/streams/{stream_id}/playlist.m3u8"
+            hls_url = f"/api/streams/hls/{stream_id}/playlist.m3u8"
             
             try:
                 # Build FFmpeg command
@@ -61,12 +61,21 @@ class StreamManager:
                 )
                 
                 # Start FFmpeg process
+                logger.info(f"Starting FFmpeg with command: {ffmpeg_cmd}")
                 process = subprocess.Popen(
                     ffmpeg_cmd,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     shell=True
                 )
+                
+                # Check if process started successfully
+                if process.poll() is not None:
+                    # Process ended immediately, get error output
+                    stdout, stderr = process.communicate()
+                    error_msg = f"FFmpeg process failed to start. stdout: {stdout.decode()}, stderr: {stderr.decode()}"
+                    logger.error(error_msg)
+                    return {'success': False, 'error': error_msg}
                 
                 # Store stream info
                 self.active_streams[stream_id] = {
@@ -221,9 +230,12 @@ class StreamManager:
         # Check if process is still running
         if process.poll() is None:
             stream_info['status'] = 'running'
+            logger.info(f"Stream {stream_id} is running successfully")
         else:
             stream_info['status'] = 'error'
-            logger.error(f"Stream {stream_id} process terminated unexpectedly")
+            # Get error output
+            stdout, stderr = process.communicate()
+            logger.error(f"Stream {stream_id} process terminated unexpectedly. stdout: {stdout.decode()}, stderr: {stderr.decode()}")
         
         # Monitor process
         while stream_id in self.active_streams:
