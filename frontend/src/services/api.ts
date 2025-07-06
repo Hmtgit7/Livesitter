@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // API base configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_BASE_URL = "https://livesitter-yeop.onrender.com";
 
 // Create axios instance with default configuration
 const api = axios.create({

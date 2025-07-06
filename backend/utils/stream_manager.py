@@ -18,6 +18,9 @@ class StreamManager:
         self.active_streams: Dict[str, Dict[str, Any]] = {}
         self.stream_lock = threading.Lock()
         
+        # Log config attributes for debugging
+        logger.info(f"StreamManager initialized with config: MAX_STREAMS={getattr(config, 'MAX_STREAMS', 'NOT_FOUND')}, FFMPEG_PATH={getattr(config, 'FFMPEG_PATH', 'NOT_FOUND')}")
+        
         # Create streams directory if it doesn't exist
         self.streams_dir = os.path.join(os.getcwd(), 'streams')
         os.makedirs(self.streams_dir, exist_ok=True)
@@ -28,7 +31,10 @@ class StreamManager:
             if stream_id in self.active_streams:
                 return {'success': False, 'error': 'Stream already running'}
             
-            if len(self.active_streams) >= self.config.MAX_STREAMS:
+            # Check if MAX_STREAMS attribute exists, default to 5 if not
+            max_streams = getattr(self.config, 'MAX_STREAMS', 5)
+            logger.info(f"Starting stream {stream_id}, current streams: {len(self.active_streams)}, max: {max_streams}")
+            if len(self.active_streams) >= max_streams:
                 return {'success': False, 'error': 'Maximum streams reached'}
             
             # Default settings
@@ -177,9 +183,13 @@ class StreamManager:
         bitrate = settings.get('bitrate', quality_settings[quality]['bitrate'])
         crf = quality_settings[quality]['crf']
         
-        # Build command
+        # Build command with fallback values for config attributes
+        ffmpeg_path = getattr(self.config, 'FFMPEG_PATH', 'ffmpeg')
+        hls_segment_duration = getattr(self.config, 'HLS_SEGMENT_DURATION', 2)
+        hls_playlist_length = getattr(self.config, 'HLS_PLAYLIST_LENGTH', 10)
+        
         cmd = [
-            self.config.FFMPEG_PATH,
+            ffmpeg_path,
             '-i', rtsp_url,
             '-c:v', 'libx264',
             '-preset', 'fast',
@@ -187,8 +197,8 @@ class StreamManager:
             '-c:a', 'aac',
             '-b:a', '128k',
             '-f', 'hls',
-            '-hls_time', str(self.config.HLS_SEGMENT_DURATION),
-            '-hls_list_size', str(self.config.HLS_PLAYLIST_LENGTH),
+            '-hls_time', str(hls_segment_duration),
+            '-hls_list_size', str(hls_playlist_length),
             '-hls_flags', 'delete_segments',
             '-hls_segment_filename', os.path.join(stream_dir, 'segment_%03d.ts'),
             '-vf', f'scale={resolution_map[resolution]},fps={fps}',
@@ -241,8 +251,13 @@ stream_manager: Optional[StreamManager] = None
 def init_stream_manager(config: Config) -> StreamManager:
     """Initialize stream manager"""
     global stream_manager
-    stream_manager = StreamManager(config)
-    return stream_manager
+    try:
+        stream_manager = StreamManager(config)
+        logger.info("Stream manager initialized successfully")
+        return stream_manager
+    except Exception as e:
+        logger.error(f"Failed to initialize stream manager: {e}")
+        raise
 
 def get_stream_manager() -> StreamManager:
     """Get stream manager instance"""

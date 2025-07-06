@@ -56,8 +56,10 @@ def create_app(config_name='default'):
     # Initialize database and stream manager
     with app.app_context():
         try:
+            # Get the actual config class instance
+            config_instance = config[config_name]()
             init_database(app.config)
-            init_stream_manager(app.config)
+            init_stream_manager(config_instance)
             app.logger.info("Successfully initialized database and stream manager")
         except Exception as e:
             app.logger.error(f"Failed to initialize services: {e}")

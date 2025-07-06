@@ -24,8 +24,7 @@ class Config:
     
     # Stream settings
     STREAM_TIMEOUT = int(os.environ.get('STREAM_TIMEOUT', '30'))
-    MAX_STREAMS = 5
-    FFMPEG_PATH = "ffmpeg"
+    MAX_STREAMS = int(os.environ.get('MAX_STREAMS', '5'))
 
 class DevelopmentConfig(Config):
     """Development configuration"""
