@@ -51,8 +51,8 @@ class StreamManager:
             stream_dir = os.path.join(self.streams_dir, stream_id)
             os.makedirs(stream_dir, exist_ok=True)
             
-            # Generate HLS URL
-            hls_url = f"/streams/{stream_id}/playlist.m3u8"
+            # Generate HLS URL - include full API path
+            hls_url = f"/api/streams/streams/{stream_id}/playlist.m3u8"
             
             try:
                 # Build FFmpeg command
