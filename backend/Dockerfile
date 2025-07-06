@@ -22,5 +22,5 @@ ENV FLASK_APP=run.py
 ENV FLASK_RUN_HOST=0.0.0.0
 ENV FLASK_RUN_PORT=5000
 
-# Start the Flask app
-CMD ["python", "run.py"]
+# Start the Flask app with Gunicorn (production WSGI server)
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:create_app()"]
