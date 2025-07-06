@@ -76,7 +76,6 @@ const Index = () => {
             onSuccess: (startRes) => {
               // Construct full HLS URL with API base URL
               const hlsUrl = `https://livesitter-yeop.onrender.com${startRes.data.data.hls_url}`;
-              console.log('Setting HLS URL:', hlsUrl);
               setHlsUrl(hlsUrl);
               setIsStreaming(true);
               setStreamStatus('playing');

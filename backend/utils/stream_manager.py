@@ -18,12 +18,12 @@ class StreamManager:
         self.active_streams: Dict[str, Dict[str, Any]] = {}
         self.stream_lock = threading.Lock()
         
-        # Log config attributes for debugging
-        logger.info(f"StreamManager initialized with config: MAX_STREAMS={getattr(config, 'MAX_STREAMS', 'NOT_FOUND')}, FFMPEG_PATH={getattr(config, 'FFMPEG_PATH', 'NOT_FOUND')}")
-        
         # Create streams directory if it doesn't exist
         self.streams_dir = os.path.join(os.getcwd(), 'streams')
         os.makedirs(self.streams_dir, exist_ok=True)
+        
+        # Log config attributes for debugging
+        logger.info(f"StreamManager initialized with config: MAX_STREAMS={getattr(config, 'MAX_STREAMS', 'NOT_FOUND')}, FFMPEG_PATH={getattr(config, 'FFMPEG_PATH', 'NOT_FOUND')}")
     
     def start_stream(self, stream_id: str, rtsp_url: str, settings: Dict[str, Any] = None) -> Dict[str, Any]:
         """Start RTSP to HLS conversion"""
@@ -197,11 +197,12 @@ class StreamManager:
         hls_segment_duration = getattr(self.config, 'HLS_SEGMENT_DURATION', 2)
         hls_playlist_length = getattr(self.config, 'HLS_PLAYLIST_LENGTH', 10)
         
+        # Simplified FFmpeg command for better compatibility
         cmd = [
             ffmpeg_path,
             '-i', rtsp_url,
             '-c:v', 'libx264',
-            '-preset', 'fast',
+            '-preset', 'ultrafast',  # Changed from 'fast' for better compatibility
             '-crf', str(crf),
             '-c:a', 'aac',
             '-b:a', '128k',
@@ -211,6 +212,7 @@ class StreamManager:
             '-hls_flags', 'delete_segments',
             '-hls_segment_filename', os.path.join(stream_dir, 'segment_%03d.ts'),
             '-vf', f'scale={resolution_map[resolution]},fps={fps}',
+            '-y',  # Overwrite output files
             os.path.join(stream_dir, 'playlist.m3u8')
         ]
         
