@@ -1,0 +1,10 @@
+Flask
+Flask-CORS
+pymongo
+python-dotenv
+requests
+python-ffmpeg
+flask-limiter
+marshmallow
+flask-marshmallow
+marshmallow-sqlalchemy 

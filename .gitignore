@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.env
+.env
+.venv/
+venv/
+*.sqlite3
+
+# Docker
+*.log
+*.pid
+*.db
+*.sock
+
+# VSCode
+.vscode/
+
+# Mac/Windows
+.DS_Store
+Thumbs.db
+
+# Node (if you ever add frontend here)
+node_modules/
+dist/
+build/
+*.lock
+
+# Ignore frontend build artifacts
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.next/
+frontend/.vercel/
