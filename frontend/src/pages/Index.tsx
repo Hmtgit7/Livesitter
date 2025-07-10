@@ -24,7 +24,7 @@ import {
 } from '@/hooks/useApi';
 
 const Index = () => {
-  const [rtspUrl, setRtspUrl] = useState('rtsp://rtsp.stream/pattern');
+  const [rtspUrl, setRtspUrl] = useState(''); // Remove default test URL
   const [streamId, setStreamId] = useState<string | null>(null);
   const [hlsUrl, setHlsUrl] = useState<string | undefined>(undefined);
   const [isStreaming, setIsStreaming] = useState(false);
@@ -168,54 +168,6 @@ const Index = () => {
     });
   };
 
-  // Add sample overlays for testing
-  const handleAddSampleOverlays = () => {
-    const sampleOverlays = [
-      {
-        name: "Live Text",
-        type: "text" as const,
-        content: "LIVE STREAM",
-        position: { x: 10, y: 10 },
-        size: { width: 200, height: 50 },
-        style: {
-          fontSize: 24,
-          color: "#ffffff",
-          fontFamily: "Arial",
-          opacity: 1.0,
-        },
-      },
-      {
-        name: "Logo",
-        type: "logo" as const,
-        content: "LIVECAST PRO",
-        position: { x: 70, y: 10 },
-        size: { width: 150, height: 40 },
-        style: {
-          fontSize: 16,
-          color: "#ffffff",
-          fontFamily: "Arial",
-          opacity: 0.8,
-        },
-      },
-      {
-        name: "Sample Image",
-        type: "image" as const,
-        content: "https://picsum.photos/100/50",
-        position: { x: 10, y: 70 },
-        size: { width: 100, height: 50 },
-        style: {
-          opacity: 0.9,
-        },
-      },
-    ];
-    
-    handleBatchAddOverlays(sampleOverlays);
-    toast({
-      title: "Sample Overlays Added",
-      description: "Added sample text, logo, and image overlays for testing.",
-    });
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
       {/* Modern Header with Floating Design */}
@@ -272,26 +224,6 @@ const Index = () => {
                     {streamStatus === 'connecting' ? 'Connecting...' : (isStreaming ? 'Stop Stream' : 'Start Stream')}
                   </Button>
                 </div>
-                {/* Quick Examples with New Design */}
-                <div className="flex flex-wrap gap-3">
-                  <span className="text-muted-foreground font-medium">Quick examples:</span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setRtspUrl('rtsp://rtsp.stream/pattern')}
-                    className="text-xs border-primary/20 text-primary hover:bg-primary/10 hover:border-primary/40 rounded-lg"
-                  >
-                    Pattern Stream
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setRtspUrl('rtsp://rtsp.stream/movie')}
-                    className="text-xs border-secondary/20 text-secondary hover:bg-secondary/10 hover:border-secondary/40 rounded-lg"
-                  >
-                    Movie Stream
-                  </Button>
-                </div>
               </CardContent>
             </Card>
 
@@ -332,18 +264,6 @@ const Index = () => {
               loading={overlaysLoading}
             />
             
-            {/* Test Sample Overlays Button */}
-            <Card className="bg-gradient-subtle border-border/50 shadow-glow mt-4">
-              <CardContent className="p-4">
-                <Button 
-                  onClick={handleAddSampleOverlays}
-                  className="w-full bg-gradient-primary hover:shadow-glow"
-                  disabled={overlaysLoading}
-                >
-                  Add Sample Overlays
-                </Button>
-              </CardContent>
-            </Card>
           </div>
         </div>
 

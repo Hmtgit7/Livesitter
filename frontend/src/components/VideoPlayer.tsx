@@ -188,7 +188,6 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
                   <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-4 mx-auto animate-pulse shadow-glow">
                     <div className="w-3 h-3 bg-primary-foreground rounded-full"></div>
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">LIVE STREAM</h3>
                   <p className="text-sm text-muted-foreground break-all px-4">{rtspUrl}</p>
                 </div>
               </div>

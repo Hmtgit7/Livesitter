@@ -430,44 +430,4 @@ def serve_hls_file(filename):
         return jsonify({
             'success': False,
             'error': 'File not found'
-        }), 404
-
-@streams_bp.route('/test-hls/<stream_id>', methods=['GET'])
-def test_hls_creation(stream_id: str):
-    """Test endpoint to create a simple HLS file for testing"""
-    try:
-        streams_dir = os.path.join(os.getcwd(), 'streams')
-        stream_dir = os.path.join(streams_dir, stream_id)
-        os.makedirs(stream_dir, exist_ok=True)
-        
-        # Create a simple test playlist
-        playlist_content = """#EXTM3U
-#EXT-X-VERSION:3
-#EXT-X-TARGETDURATION:2
-#EXT-X-MEDIA-SEQUENCE:0
-#EXTINF:2.0,
-segment_000.ts
-#EXT-X-ENDLIST"""
-        
-        playlist_path = os.path.join(stream_dir, 'playlist.m3u8')
-        with open(playlist_path, 'w') as f:
-            f.write(playlist_content)
-        
-        # Create a simple test segment (empty file for testing)
-        segment_path = os.path.join(stream_dir, 'segment_000.ts')
-        with open(segment_path, 'w') as f:
-            f.write('')
-        
-        logger.info(f"Created test HLS files for stream {stream_id}")
-        return jsonify({
-            'success': True,
-            'message': f'Test HLS files created for stream {stream_id}',
-            'playlist_url': f'/api/streams/hls/{stream_id}/playlist.m3u8'
-        })
-        
-    except Exception as e:
-        logger.error(f"Error creating test HLS files: {e}")
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500 
+        }), 404 
